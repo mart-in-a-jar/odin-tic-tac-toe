@@ -1,0 +1,40 @@
+:root {
+    --board-size: max(30vh, 300px);
+    --boarders: 2px solid black;
+}
+
+html {
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+.mainContainer {
+    display: flex;
+    margin-top: 300px;
+    justify-content: center;
+}
+
+.gameBoard {
+    display: grid;
+    height: var(--board-size);
+    width: var(--board-size);
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+    border-collapse: collapse;
+    /* border: 0.2px solid rgba(0, 0, 0, 0.100); */
+}
+
+.gameField {
+    cursor: pointer;
+}
+
+.gameField:nth-child(3n+2) {
+    border-left: var(--boarders);
+    border-right: var(--boarders);
+}
+
+.gameField:nth-child(n+4):nth-child(-n+6) {
+    border-top: var(--boarders);
+    border-bottom: var(--boarders);
+}
