@@ -60,9 +60,16 @@ const player = function(name, sign, human) {
 
 const gameLogic = (function() {
     // Define players/names in browser
-    const player1 = player("Player 1", "X", true);
-    const player2 = player("Player 2", "O", false);
-    let playerTurn = player1;
+    let player1// = player("Player 1", "X", true);
+    let player2// = player("Player 2", "O", false);
+    let playerTurn;
+
+    const addPlayers = (player1_name, player2_name, ai) => {
+        player1 = player(player1_name, "X", true);
+        player2 = player(player2_name, "O", ai);
+        displayController.startGame();
+        playerTurn = player1;
+    }
     
     const userMakeMove = (e) => {
         if (!playerTurn.isHuman()) {
@@ -110,7 +117,8 @@ const gameLogic = (function() {
 
 
     return {
-        userMakeMove
+        userMakeMove,
+        addPlayers
     }
     
 })();
@@ -118,6 +126,8 @@ const gameLogic = (function() {
 const displayController = (function() {
     // Event listeners etc
     const _boardFields = document.querySelectorAll(".gameField");
+    const _inputs = document.querySelector(".players");
+    const _startbutton = document.querySelector("#startGame");
 
     const startGame = () => {
         _boardFields.forEach(field => {
@@ -131,9 +141,16 @@ const displayController = (function() {
         });
     }
 
-    const addPlayers = () => {
-        
+    const _addPlayers = () => {
+        const _player1_name = _inputs.querySelector("#player-1-name").value || "Player 1";
+        const _player2_name = _inputs.querySelector("#player-2-name").value || "Player 2";
+        const _player2_ai = !_inputs.querySelector("#player-2-ai").checked;
+        gameLogic.addPlayers(_player1_name, _player2_name, _player2_ai);
+        gameBoard.restart();
+        console.log("Players added");
     }
+
+    _startbutton.addEventListener("click", _addPlayers);
 
     // Info boxes with text
 
