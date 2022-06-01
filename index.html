@@ -12,6 +12,23 @@
     <link rel="manifest" href="img/favicon/site.webmanifest"> -->
 </head>
 <body>
+    <header>
+        <div class="players">
+            <div class="player player-1">
+                <label for="player-1-name">Player 1</label>
+                <input type="text" id="player-1-name" placeholder="Name">
+                <p>Sign: X</p>
+            </div>
+            <div class="player player-2">
+                <label for="player-2-name">Name</label>
+                <input type="text" id="player-2-name" placeholder="Name">
+                <p>Sign: O</p>
+                <input type="checkbox" id="player-2-ai">
+                <label for="player-2-ai" class="switch">Computer?</label>
+            </div>
+        </div>
+        <button type="button">Start game</button>
+    </header>
     <div class="mainContainer">
         <div class="gameBoard">
             <div class="gameField" data-field="0"><p></p></div>

@@ -1,8 +1,9 @@
 const gameBoard = (function() {
-    const _boardLayout = new Array(9);
+    let _boardLayout = new Array(9);
+    const board = document.querySelector(".gameBoard");
 
     const makeMove = (field, player) => {
-        const _square = document.querySelector(`.gameField[data-field="${field}"] p`);
+        const _square = board.querySelector(`.gameField[data-field="${field}"] p`);
         if (_boardLayout[field] === undefined) {
             // push to array
             _boardLayout[field] = player.getSign();
@@ -11,6 +12,7 @@ const gameBoard = (function() {
             _logBoard();
         } else {
             console.log("Already populated");
+            return false;
         }
     }
 
@@ -33,10 +35,18 @@ const gameBoard = (function() {
         }
         return {freeFields, usedFields};
     }
+
+    const restart = () => {
+        _boardLayout = new Array(9);
+        board.querySelectorAll(".gameField p").forEach(field => {
+            field.textContent = "";
+        });
+    }
     
     return {
         makeMove,
-        getFields
+        getFields,
+        restart
     }
 
 })();
@@ -49,8 +59,9 @@ const player = function(name, sign, human) {
 }
 
 const gameLogic = (function() {
+    // Define players/names in browser
     const player1 = player("Player 1", "X", true);
-    const player2 = player("Player 2", "O", true);
+    const player2 = player("Player 2", "O", false);
     let playerTurn = player1;
     
     const userMakeMove = (e) => {
@@ -66,6 +77,9 @@ const gameLogic = (function() {
             }
         }
         const field = e.target.dataset.field;
+        const _freeFields = gameBoard.getFields().freeFields;
+        // Check if field is empty, else return
+        if (!_freeFields.includes(+field)) return;
         gameBoard.makeMove(field, e.target.user || player1);
         // Check for win/draw
 
@@ -80,6 +94,7 @@ const gameLogic = (function() {
             turnToggle();
             displayController.swapTurn(playerTurn);
         }
+        
         
     }
     const computerMakeMove = () => {
@@ -104,9 +119,11 @@ const displayController = (function() {
     // Event listeners etc
     const _boardFields = document.querySelectorAll(".gameField");
 
-    _boardFields.forEach(field => {
-        field.addEventListener("click", gameLogic.userMakeMove);
-    });
+    const startGame = () => {
+        _boardFields.forEach(field => {
+            field.addEventListener("click", gameLogic.userMakeMove);
+        });
+    }
 
     const swapTurn = (user) => {
         _boardFields.forEach(field => {
@@ -114,9 +131,14 @@ const displayController = (function() {
         });
     }
 
+    const addPlayers = () => {
+        
+    }
+
     // Info boxes with text
 
     return {
+        startGame,
         swapTurn
     }
 })();
