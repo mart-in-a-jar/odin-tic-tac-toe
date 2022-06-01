@@ -67,11 +67,14 @@ const gameLogic = (function() {
     const addPlayers = (player1_name, player2_name, ai) => {
         player1 = player(player1_name, "X", true);
         player2 = player(player2_name, "O", ai);
-        displayController.startGame();
         playerTurn = player1;
     }
     
     const userMakeMove = (e) => {
+        if (!playerTurn) {
+            console.log("Add players first!");
+            return;
+        }
         if (!playerTurn.isHuman()) {
             console.log("Not your turn!");
             return;
@@ -129,7 +132,7 @@ const displayController = (function() {
     const _inputs = document.querySelector(".players");
     const _startbutton = document.querySelector("#startGame");
 
-    const startGame = () => {
+    const _init = () => {
         _boardFields.forEach(field => {
             field.addEventListener("click", gameLogic.userMakeMove);
         });
@@ -154,8 +157,9 @@ const displayController = (function() {
 
     // Info boxes with text
 
+    _init();
+
     return {
-        startGame,
         swapTurn
     }
 })();
