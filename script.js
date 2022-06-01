@@ -41,33 +41,45 @@ const gameBoard = (function() {
 
 })();
 
-const player = function(name, sign) {
+const player = function(name, sign, human) {
     const getName = () => name;
     const getSign = () => sign;
-    return {getName, getSign};
+    const isHuman = () => human;
+    return {getName, getSign, isHuman};
 }
 
 const gameLogic = (function() {
-    const player1 = player("Player", "X");
-    const player2 = player("Player", "O");
-    let humanTurn = true;
+    const player1 = player("Player 1", "X", true);
+    const player2 = player("Player 2", "O", true);
+    let playerTurn = player1;
     
     const userMakeMove = (e) => {
-        if (!humanTurn) {
+        if (!playerTurn.isHuman()) {
             console.log("Not your turn!");
             return;
         }   
         const turnToggle = () => {
-            humanTurn = !humanTurn;
+            if (playerTurn === player1) {
+                playerTurn = player2;
+            } else {
+                playerTurn = player1;
+            }
         }
         const field = e.target.dataset.field;
-        gameBoard.makeMove(field, player1);
+        gameBoard.makeMove(field, e.target.user || player1);
         // Check for win/draw
-        turnToggle();
-        setTimeout(() => {
-            computerMakeMove()
-            turnToggle()
-        }, 500);
+
+        // Differences if player 2 is computer vs human
+        if (!player2.isHuman()) {
+            turnToggle();
+            setTimeout(() => {
+                computerMakeMove();
+                turnToggle();
+            }, 500);
+        } else if (player2.isHuman()) {
+            turnToggle();
+            displayController.swapTurn(playerTurn);
+        }
         
     }
     const computerMakeMove = () => {
@@ -75,6 +87,10 @@ const gameLogic = (function() {
         const _choice = Math.floor(Math.random() * _freeFields.length);
         gameBoard.makeMove(_freeFields[_choice], player2);
         // Check for win/draw
+    }
+
+    const checkForWin = () => {
+
     }
 
 
@@ -91,6 +107,18 @@ const displayController = (function() {
     _boardFields.forEach(field => {
         field.addEventListener("click", gameLogic.userMakeMove);
     });
+
+    const swapTurn = (user) => {
+        _boardFields.forEach(field => {
+            field.user = user;
+        });
+    }
+
+    // Info boxes with text
+
+    return {
+        swapTurn
+    }
 })();
 
 
