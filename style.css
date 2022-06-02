@@ -13,7 +13,7 @@ html {
 }
 
 .mainContainer {
-    display: flex;
+    display: grid;
     justify-content: center;
     margin-top: 100px;
 }
@@ -24,6 +24,7 @@ html {
     width: var(--board-size);
     grid-template: repeat(3, 1fr) / repeat(3, 1fr);
     border-collapse: collapse;
+    grid-area: 1/1;
     /* border: 0.2px solid rgba(0, 0, 0, 0.100); */
 }
 
@@ -106,4 +107,26 @@ input[type="checkbox"] {
 
 .switch:active::after {
     width: 30px;
+}
+
+.overlay {
+    grid-area: 1/1;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.082);
+    width: 400%;
+    height: 150%;
+    position: relative;
+    top: -10%;
+    left: -150%;
+    border-radius: 50px;
+}
+
+.overlay.active {
+    display: flex;
+    align-items: flex-end;
+
+}
+
+.overlay p {
+    padding-left: 200px;
 }
