@@ -121,7 +121,16 @@ const gameLogic = (function() {
         const _freeFields = gameBoard.getFields().freeFields;
         const _choice = Math.floor(Math.random() * _freeFields.length);
         gameBoard.makeMove(_freeFields[_choice], player2);
-        _checkForWin();
+        const winner = _checkForWin();
+        if (winner) {
+            console.log("There was a winner: " + winner.getName());
+            displayController.displayResult("win", winner);
+            return;
+        } else if (_checkForDraw()) {
+            console.log("Draw");
+            displayController.displayResult("draw", null);
+            return;
+        }
     }
 
     const _checkForWin = () => {
@@ -195,7 +204,9 @@ const displayController = (function() {
     // Event listeners etc
     const _boardFields = document.querySelectorAll(".gameField");
     const _inputs = document.querySelector(".players");
+    const _inputList = _inputs.querySelectorAll("input");
     const _startbutton = document.querySelector("#startGame");
+    const _resetButton = document.querySelector("#resetGame");
 
     const _init = () => {
         _boardFields.forEach(field => {
@@ -213,6 +224,7 @@ const displayController = (function() {
         const _player1_name = _inputs.querySelector("#player-1-name").value || "Player 1";
         const _player2_name = _inputs.querySelector("#player-2-name").value || "Player 2";
         const _player2_ai = !_inputs.querySelector("#player-2-ai").checked;
+        _disableInputs();
         gameLogic.addPlayers(_player1_name, _player2_name, _player2_ai);
         gameBoard.restart();
         console.log("Players added");
@@ -222,7 +234,23 @@ const displayController = (function() {
         // Show overlay displaying result
     }
 
+    const _disableInputs = () => {
+        _inputList.forEach(input => {
+            input.setAttribute("disabled", "");
+        })
+    }
+
+    const _enableInputs = () => {
+        _inputList.forEach(input => {
+            input.removeAttribute("disabled");
+        });
+    }
+
     _startbutton.addEventListener("click", _addPlayers);
+    _resetButton.addEventListener("click", () => {
+        gameBoard.restart();
+        _enableInputs();
+    });
 
     // Info boxes with text
 
