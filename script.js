@@ -33,7 +33,7 @@ const gameBoard = (function() {
                 freeFields.push(i);
             }
         }
-        return {freeFields, usedFields};
+        return {freeFields, usedFields, all: _boardLayout};
     }
 
     const restart = () => {
@@ -60,14 +60,15 @@ const player = function(name, sign, human) {
 
 const gameLogic = (function() {
     // Define players/names in browser
-    let player1// = player("Player 1", "X", true);
-    let player2// = player("Player 2", "O", false);
+    let player1;
+    let player2;
     let playerTurn;
 
     const addPlayers = (player1_name, player2_name, ai) => {
         player1 = player(player1_name, "X", true);
         player2 = player(player2_name, "O", ai);
         playerTurn = player1;
+        displayController.swapTurn(playerTurn);
     }
     
     const userMakeMove = (e) => {
@@ -91,7 +92,16 @@ const gameLogic = (function() {
         // Check if field is empty, else return
         if (!_freeFields.includes(+field)) return;
         gameBoard.makeMove(field, e.target.user || player1);
-        // Check for win/draw
+        const winner = _checkForWin();
+        if (winner) {
+            console.log("There was a winner: " + winner.getName());
+            displayController.displayResult("win", winner);
+            return;
+        } else if (_checkForDraw()) {
+            console.log("Draw");
+            displayController.displayResult("draw", null);
+            return;
+        }
 
         // Differences if player 2 is computer vs human
         if (!player2.isHuman()) {
@@ -111,11 +121,66 @@ const gameLogic = (function() {
         const _freeFields = gameBoard.getFields().freeFields;
         const _choice = Math.floor(Math.random() * _freeFields.length);
         gameBoard.makeMove(_freeFields[_choice], player2);
-        // Check for win/draw
+        _checkForWin();
     }
 
-    const checkForWin = () => {
+    const _checkForWin = () => {
 
+        const _checkRows = () => {
+            for (let i = 0; i < 3; i++) {
+                const row = [];
+                for (let j = 3 * i; j < 3 * i + 3; j++) {
+                    row.push(gameBoard.getFields().all[j]);
+                }
+                const winner = _findWinner(row);
+                if (winner) return winner;
+            }
+        }
+
+        const _checkColumns = () => {
+            for (let i = 0; i < 3; i++) {
+                const column = [];
+                for (let j = i; j < i + 7; j = j + 3) {
+                    column.push(gameBoard.getFields().all[j]);
+                }
+                const winner = _findWinner(column);
+                if (winner) return winner;
+            }
+        }
+
+        const _checkDiagonal = () => {
+            for (let i = 0; i < 3; i = i + 2) {
+                const diagonal = [];
+                if (i === 0) {
+                    for (let j = i; j < 9; j = j + 4) {
+                        diagonal.push(gameBoard.getFields().all[j]);
+                    } 
+                } else if (i === 2) {
+                    for (let j = i; j < 7; j = j + 2) {
+                        diagonal.push(gameBoard.getFields().all[j]);
+                    }
+                }
+                const winner = _findWinner(diagonal);
+                if (winner) return winner;
+            }
+        }
+
+        const _findWinner = (line) => {
+            if (line.every(field => field === player1.getSign())) {
+                return player1;
+            } else if (line.every(field => field === player2.getSign())) {
+                return player2;
+            }
+        }
+
+        return _checkRows() || _checkColumns() || _checkDiagonal();
+
+    }
+
+    const _checkForDraw = () => {
+        if (gameBoard.getFields().freeFields.length < 1) {
+            return true;
+        } else return false;
     }
 
 
@@ -153,6 +218,10 @@ const displayController = (function() {
         console.log("Players added");
     }
 
+    const displayResult = (result, winner) => {
+        // Show overlay displaying result
+    }
+
     _startbutton.addEventListener("click", _addPlayers);
 
     // Info boxes with text
@@ -160,7 +229,8 @@ const displayController = (function() {
     _init();
 
     return {
-        swapTurn
+        swapTurn,
+        displayResult
     }
 })();
 
