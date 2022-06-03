@@ -131,7 +131,7 @@ const gameLogic = (function() {
         gameBoard.makeMove(_freeFields[_choice], player2);
         const winner = _checkForWin();
         if (winner) {
-            console.log("There was a winner: " + winner.getName());
+            console.log("There was a winner: " + winner.winner.getName());
             displayController.displayResult("win", winner);
             return;
         } else if (_checkForDraw()) {
