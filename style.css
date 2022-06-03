@@ -112,7 +112,7 @@ input[type="checkbox"] {
 .overlay {
     grid-area: 1/1;
     display: none;
-    background-color: rgba(0, 0, 0, 0.082);
+    background-color: rgba(0, 0, 0, 0.445);
     width: 400%;
     height: 150%;
     position: relative;
@@ -129,4 +129,19 @@ input[type="checkbox"] {
 
 .overlay p {
     padding-left: 200px;
+}
+
+
+@keyframes scaleInOut {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.17);
+    }
+}
+
+
+#startGame.active {
+    animation: scaleInOut 1s linear;
 }

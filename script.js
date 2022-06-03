@@ -74,6 +74,7 @@ const gameLogic = (function() {
     const userMakeMove = (e) => {
         if (!playerTurn) {
             console.log("Add players first!");
+            displayController.focusStartButton();
             return;
         }
         if (!playerTurn.isHuman()) {
@@ -207,6 +208,7 @@ const displayController = (function() {
     const _inputList = _inputs.querySelectorAll("input");
     const _startbutton = document.querySelector("#startGame");
     const _resetButton = document.querySelector("#resetGame");
+    const _resultOverlay = document.querySelector(".result-display.overlay");
 
     const _init = () => {
         _boardFields.forEach(field => {
@@ -227,17 +229,36 @@ const displayController = (function() {
         _disableInputs();
         gameLogic.addPlayers(_player1_name, _player2_name, _player2_ai);
         gameBoard.restart();
+        _removeResult();
         console.log("Players added");
+    }
+
+    const _removeResult = () => {
+        _resultOverlay.classList.remove("active");
     }
 
     const displayResult = (result, winner) => {
         // Show overlay displaying result
+        const _resultText = _resultOverlay.querySelector("p");
+        _resultOverlay.classList.add("active");
+        if (result === "win") {
+            _resultText.textContent = `${winner.getName()} wins!`;
+        } else if (result === "draw") {
+            _resultText.textContent = "It's a draw."
+        }
     }
 
     const _disableInputs = () => {
         _inputList.forEach(input => {
             input.setAttribute("disabled", "");
         })
+    }
+
+    const focusStartButton = () => {
+        _startbutton.classList.remove("active");
+        setTimeout(() => {
+            _startbutton.classList.add("active");
+        }, 100);
     }
 
     const _enableInputs = () => {
@@ -258,7 +279,8 @@ const displayController = (function() {
 
     return {
         swapTurn,
-        displayResult
+        displayResult,
+        focusStartButton
     }
 })();
 
