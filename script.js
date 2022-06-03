@@ -36,11 +36,14 @@ const gameBoard = (function() {
         return {freeFields, usedFields, all: _boardLayout};
     }
 
-    const restart = () => {
+    const restart = (method) => {
         _boardLayout = new Array(9);
         board.querySelectorAll(".gameField p").forEach(field => {
             field.textContent = "";
         });
+        displayController.removeResult();
+        if (method === "restart") gameLogic.haltGame();
+        else if (method === "start") return;
     }
     
     return {
@@ -63,6 +66,10 @@ const gameLogic = (function() {
     let player1;
     let player2;
     let playerTurn;
+
+    const haltGame = () => {
+        playerTurn = null;
+    }
 
     const addPlayers = (player1_name, player2_name, ai) => {
         player1 = player(player1_name, "X", true);
@@ -196,7 +203,8 @@ const gameLogic = (function() {
 
     return {
         userMakeMove,
-        addPlayers
+        addPlayers,
+        haltGame
     }
     
 })();
@@ -228,12 +236,12 @@ const displayController = (function() {
         const _player2_ai = !_inputs.querySelector("#player-2-ai").checked;
         _disableInputs();
         gameLogic.addPlayers(_player1_name, _player2_name, _player2_ai);
-        gameBoard.restart();
-        _removeResult();
+        gameBoard.restart("start");
+        removeResult();
         console.log("Players added");
     }
 
-    const _removeResult = () => {
+    const removeResult = () => {
         _resultOverlay.classList.remove("active");
     }
 
@@ -244,43 +252,45 @@ const displayController = (function() {
         if (result === "win") {
             _resultText.textContent = `${winner.getName()} wins!`;
         } else if (result === "draw") {
-            _resultText.textContent = "It's a draw."
+            _resultText.textContent = "It's a draw"
         }
+        _enableInputs();
     }
 
     const _disableInputs = () => {
         _inputList.forEach(input => {
             input.setAttribute("disabled", "");
-        })
-    }
-
-    const focusStartButton = () => {
-        _startbutton.classList.remove("active");
-        setTimeout(() => {
-            _startbutton.classList.add("active");
-        }, 100);
+        });
+        _inputs.querySelector(".switch").classList.add("disabled");
     }
 
     const _enableInputs = () => {
         _inputList.forEach(input => {
             input.removeAttribute("disabled");
         });
+        _inputs.querySelector(".switch").classList.remove("disabled");
+    }
+
+    const focusStartButton = () => {
+        _startbutton.classList.remove("animate");
+        setTimeout(() => {
+            _startbutton.classList.add("animate");
+        }, 100);
     }
 
     _startbutton.addEventListener("click", _addPlayers);
     _resetButton.addEventListener("click", () => {
-        gameBoard.restart();
+        gameBoard.restart("restart");
         _enableInputs();
     });
-
-    // Info boxes with text
 
     _init();
 
     return {
         swapTurn,
         displayResult,
-        focusStartButton
+        focusStartButton,
+        removeResult
     }
 })();
 
