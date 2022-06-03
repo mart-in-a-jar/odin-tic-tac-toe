@@ -120,6 +120,9 @@ input[type="checkbox"] {
 
 .switch.disabled {
     cursor: not-allowed;
+}
+
+#player-2-ai:checked + .switch.disabled {
     background: #268f3886 !important;
 }
 
