@@ -142,8 +142,8 @@ input[type="checkbox"] {
 
 .mainContainer {
     display: grid;
-    grid-template: 500px/400px;
-    justify-content: center;
+    grid-template: 500px / 1fr auto 1fr;
+    justify-items: center;
     align-items: center;
     margin-top: 80px;
 }
@@ -153,7 +153,7 @@ input[type="checkbox"] {
     height: var(--board-size);
     width: var(--board-size);
     grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-    grid-area: 1/1;
+    grid-area: 1/2;
 }
 
 .gameField {
@@ -190,13 +190,12 @@ input[type="checkbox"] {
 }
 
 .overlay {
-    grid-area: 1/1;
+    grid-area: 1/2;
     display: none;
     /* background-color: rgba(0, 0, 0, 0.445); */
-    width: 400%;
+    width: 200%;
     height: 120%;
     position: relative;
-    left: -150%;
     border-radius: 50px;
 }
 
