@@ -9,7 +9,7 @@ const gameBoard = (function() {
             _boardLayout[field] = player.getSign();
             // write to board
             _square.textContent = _boardLayout[field];
-            _logBoard();
+            // _logBoard();
         } else {
             console.log("Already populated");
             return false;
@@ -102,7 +102,7 @@ const gameLogic = (function() {
         gameBoard.makeMove(field, e.target.user || player1);
         const winner = _checkForWin();
         if (winner) {
-            console.log("There was a winner: " + winner.getName());
+            console.log("There was a winner: " + winner.winner.getName());
             displayController.displayResult("win", winner);
             return;
         } else if (_checkForDraw()) {
@@ -145,40 +145,40 @@ const gameLogic = (function() {
 
         const _checkRows = () => {
             for (let i = 0; i < 3; i++) {
-                const row = [];
+                const row = {};
                 for (let j = 3 * i; j < 3 * i + 3; j++) {
-                    row.push(gameBoard.getFields().all[j]);
+                    row[j] = (gameBoard.getFields().all[j]);
                 }
-                const winner = _findWinner(row);
-                if (winner) return winner;
+                const winner = _findWinner(Object.values(row));
+                if (winner) return {winner, line: row};
             }
         }
 
         const _checkColumns = () => {
             for (let i = 0; i < 3; i++) {
-                const column = [];
+                const column = {};
                 for (let j = i; j < i + 7; j = j + 3) {
-                    column.push(gameBoard.getFields().all[j]);
+                    column[j] = (gameBoard.getFields().all[j]);
                 }
-                const winner = _findWinner(column);
-                if (winner) return winner;
+                const winner = _findWinner(Object.values(column));
+                if (winner) return {winner, line: column};
             }
         }
 
         const _checkDiagonal = () => {
             for (let i = 0; i < 3; i = i + 2) {
-                const diagonal = [];
+                const diagonal = {};
                 if (i === 0) {
                     for (let j = i; j < 9; j = j + 4) {
-                        diagonal.push(gameBoard.getFields().all[j]);
+                        diagonal[j] = (gameBoard.getFields().all[j]);
                     } 
                 } else if (i === 2) {
                     for (let j = i; j < 7; j = j + 2) {
-                        diagonal.push(gameBoard.getFields().all[j]);
+                        diagonal[j] = (gameBoard.getFields().all[j]);
                     }
                 }
-                const winner = _findWinner(diagonal);
-                if (winner) return winner;
+                const winner = _findWinner(Object.values(diagonal));
+                if (winner) return {winner, line: diagonal};
             }
         }
 
@@ -243,6 +243,9 @@ const displayController = (function() {
 
     const removeResult = () => {
         _resultOverlay.classList.remove("active");
+        _boardFields.forEach(field => {
+            field.classList.remove("winner");
+        })
     }
 
     const displayResult = (result, winner) => {
@@ -250,7 +253,8 @@ const displayController = (function() {
         const _resultText = _resultOverlay.querySelector("p");
         _resultOverlay.classList.add("active");
         if (result === "win") {
-            _resultText.textContent = `${winner.getName()} wins!`;
+            _resultText.textContent = `${winner.winner.getName()} wins!`;
+            _showWinner(Object.keys(winner.line));
         } else if (result === "draw") {
             _resultText.textContent = "It's a draw"
         }
@@ -276,6 +280,12 @@ const displayController = (function() {
         setTimeout(() => {
             _startbutton.classList.add("animate");
         }, 100);
+    }
+
+    const _showWinner = (fields) => {
+        fields.forEach(field => {
+            _boardFields[field].classList.add("winner");
+        });
     }
 
     _startbutton.addEventListener("click", _addPlayers);
