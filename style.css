@@ -168,18 +168,20 @@ input[type="checkbox"] {
 
 .gameField.winner {
     background-color: #268f3873;
-    /* transform: scale(1.1); */
 }
 
 .gameField.winner p {
     transform: scale(1.3);
     transition: 1s;
+    color: rgba(0, 0, 0, 0.74);
 }
 
 .gameField p {
     all: unset;
-    font-size: 3rem;
+    font-size: 4rem;
     pointer-events: none;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.637);
 }
 
 .gameField:nth-child(3n+2) {
