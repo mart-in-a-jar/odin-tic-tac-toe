@@ -15,14 +15,12 @@
     <header>
         <div class="players">
             <div class="player player-1">
-                <label for="player-1-name">Player 1</label>
-                <input type="text" id="player-1-name" placeholder="Name">
-                <p>Sign: X</p>
+                <label class="sign" for="player-1-name">X</label>
+                <input type="text" id="player-1-name" placeholder="Player 1">
             </div>
             <div class="player player-2">
-                <label for="player-2-name">Player 2</label>
-                <input type="text" id="player-2-name" placeholder="Name">
-                <p>Sign: O</p>
+                <label class="sign" for="player-2-name">O</label>
+                <input type="text" id="player-2-name" placeholder="Player 2">
                 <input type="checkbox" id="player-2-ai">
                 <label for="player-2-ai" class="switch">Computer?</label>
             </div>
@@ -45,7 +43,7 @@
             <div class="gameField" data-field="8"><p></p></div>
         </div>
         <div class="result-display overlay">
-            <p>Winner is: ae</p>
+            <p></p>
         </div>
     </div>
 </body>
