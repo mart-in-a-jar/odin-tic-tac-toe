@@ -39,6 +39,7 @@ header {
     border: none;
     border-radius: 5px;
     width: 150px;
+    box-shadow: -2px 2px rgb(182, 172, 226);
 }
 
 .player-1 {
